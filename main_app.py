@@ -17,7 +17,7 @@ st.set_page_config(page_title="Matrix Math Practice", layout="centered")
 st.title("🧠 Matrix Math Practice App")
 
 # ---------------------
-# User Inputs
+# Matrix & Digit Inputs
 # ---------------------
 n = st.slider("Select Matrix Size (n x n)", 2, 10, 5)
 digits_col = st.number_input("Digits for Column Numbers", min_value=1, max_value=5, value=2)
@@ -25,21 +25,50 @@ digits_row = st.number_input("Digits for Row Numbers", min_value=1, max_value=5,
 operation = st.selectbox("Choose Operation", ["Addition", "Subtraction", "Multiplication"])
 
 # ---------------------
-# Generate Random Numbers
+# Level Selector
 # ---------------------
-def generate_numbers(n, digits):
-    min_val = 10 ** (digits - 1)
-    max_val = (10 ** digits) - 1
-    return [random.randint(min_val, max_val) for _ in range(n)]
+st.subheader("🎮 Select Difficulty Level")
+level = st.radio(
+    "Choose Level:",
+    ["🟢 Easy (<30)", "🟡 Medium (<60)", "🔴 Hard (Full Range)"],
+    horizontal=True
+)
+
+# ---------------------
+# Number Generator
+# ---------------------
+def generate_numbers(n, digits, level):
+    full_min = 10 ** (digits - 1)
+    full_max = (10 ** digits) - 1
+
+    if level.startswith("🟢"):
+        max_val = min(30, full_max)
+    elif level.startswith("🟡"):
+        max_val = min(60, full_max)
+    else:
+        max_val = full_max
+
+    min_val = full_min
+
+    if max_val - min_val + 1 < n:
+        raise ValueError(
+            f"Not enough unique numbers in range {min_val}-{max_val} for size {n}. "
+            f"Try increasing digits or changing level."
+        )
+
+    return random.sample(range(min_val, max_val + 1), n)
 
 # ---------------------
 # Generate Matrix
 # ---------------------
 if st.button("🌀 Generate Matrix"):
-    st.session_state.col_nums = generate_numbers(n, digits_col)
-    st.session_state.row_nums = generate_numbers(n, digits_row)
-    st.session_state.start_time = time.time()
-    st.session_state.show_matrix = True
+    try:
+        st.session_state.col_nums = generate_numbers(n, digits_col, level)
+        st.session_state.row_nums = generate_numbers(n, digits_row, level)
+        st.session_state.start_time = time.time()
+        st.session_state.show_matrix = True
+    except ValueError as e:
+        st.error(str(e))
 
 # ---------------------
 # Display Matrix + Form
@@ -47,7 +76,7 @@ if st.button("🌀 Generate Matrix"):
 if st.session_state.get("show_matrix", False):
     col_nums = st.session_state.col_nums
     row_nums = st.session_state.row_nums
-    st.write(f"### Fill in the {operation.lower()} results")
+    st.write(f"### Fill in the {operation.lower()} results ({level})")
 
     user_answers = {}
     correct_count = 0
@@ -99,5 +128,6 @@ if st.session_state.get("show_matrix", False):
         st.info(f"Score: **{correct_count} / {total}**")
         st.info(f"🕒 Time Taken: **{elapsed} seconds**")
         st.session_state.show_matrix = False
+
 
 
