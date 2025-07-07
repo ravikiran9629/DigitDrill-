@@ -1,15 +1,12 @@
 import streamlit as st
 import random
 import time
-from datetime import timedelta
 
 # ---------------------
-# Session State Setup
+# Session Setup
 # ---------------------
 if "start_time" not in st.session_state:
     st.session_state.start_time = None
-if "last_rerun" not in st.session_state:
-    st.session_state.last_rerun = time.time()
 if "show_matrix" not in st.session_state:
     st.session_state.show_matrix = False
 
@@ -36,46 +33,20 @@ def generate_numbers(n, digits):
     return [random.randint(min_val, max_val) for _ in range(n)]
 
 # ---------------------
-# Timer Placeholder
-# ---------------------
-timer_placeholder = st.empty()
-
-# ---------------------
 # Generate Matrix
 # ---------------------
 if st.button("🌀 Generate Matrix"):
     st.session_state.col_nums = generate_numbers(n, digits_col)
     st.session_state.row_nums = generate_numbers(n, digits_row)
     st.session_state.start_time = time.time()
-    st.session_state.last_rerun = time.time()
     st.session_state.show_matrix = True
 
 # ---------------------
-# Display Matrix + Timer + Form
+# Display Matrix + Form
 # ---------------------
 if st.session_state.get("show_matrix", False):
     col_nums = st.session_state.col_nums
     row_nums = st.session_state.row_nums
-
-    # ✅ Live Timer Display (Top-Right)
-    if st.session_state.start_time:
-        elapsed = int(time.time() - st.session_state.start_time)
-        timer_placeholder.markdown(
-            f"""
-            <div style='position: fixed; top: 15px; right: 30px; background-color: #007ACC;
-                        color: white; padding: 10px 20px; font-size: 18px; border-radius: 10px;
-                        box-shadow: 0 0 10px rgba(0,0,0,0.15); z-index: 9999;'>
-                ⏱️ <strong>{str(timedelta(seconds=elapsed))}</strong>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        # Re-run every 1 sec (non-blocking)
-        if time.time() - st.session_state.last_rerun >= 1:
-            st.session_state.last_rerun = time.time()
-            time.sleep(1)
-            st.rerun()
-
     st.write(f"### Fill in the {operation.lower()} results")
 
     user_answers = {}
@@ -100,7 +71,7 @@ if st.session_state.get("show_matrix", False):
 
         submitted = st.form_submit_button("✅ Submit Answers")
 
-    # ✅ Submission Evaluation
+    # ✅ Evaluate Results
     if submitted:
         elapsed = round(time.time() - st.session_state.start_time, 2)
         st.write("## ✅ Results")
@@ -126,6 +97,7 @@ if st.session_state.get("show_matrix", False):
                     st.error(f"{r} {operation[0]} {c} = {user_val or '?'} ❌ (Correct: {correct})")
 
         st.info(f"Score: **{correct_count} / {total}**")
-        st.info(f"⏱️ Time Taken: **{elapsed} seconds**")
+        st.info(f"🕒 Time Taken: **{elapsed} seconds**")
         st.session_state.show_matrix = False
+
 
