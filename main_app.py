@@ -41,7 +41,7 @@ if st.session_state.get("show_matrix", False):
     row_nums = st.session_state.row_nums
 
     # ✅ Live Timer Logic
-if st.session_state.start_time:
+    if st.session_state.start_time:
         elapsed = int(time.time() - st.session_state.start_time)
         timer_placeholder.markdown(
             f"<div style='position: fixed; top: 10px; right: 20px; background-color: #f0f0f0; "
@@ -52,26 +52,27 @@ if st.session_state.start_time:
         time.sleep(1)
         st.experimental_rerun()
 
+    # ✅ Now show the matrix form
     user_answers = {}
     correct_count = 0
     total = n * n
 
     with st.form("matrix_form"):
-    # Display column headers
-    top_row = st.columns(n + 1)
-    top_row[0].markdown("**+**")  # Top-left empty cell
-    for j, col_val in enumerate(col_nums):
-        top_row[j + 1].markdown(f"**{col_val}**")
+        # Display column headers
+        top_row = st.columns(n + 1)
+        top_row[0].markdown("**+**")
+        for j, col_val in enumerate(col_nums):
+            top_row[j + 1].markdown(f"**{col_val}**")
 
-    # Now display the rows
-    for i, r in enumerate(row_nums):
-        cols = st.columns(n + 1)
-        cols[0].markdown(f"**{r}**")  # Row label
-        for j, c in enumerate(col_nums):
-            user_input = cols[j + 1].text_input("", key=f"{i}_{j}")
-            user_answers[(i, j)] = user_input
+        for i, r in enumerate(row_nums):
+            cols = st.columns(n + 1)
+            cols[0].markdown(f"**{r}**")
+            for j, c in enumerate(col_nums):
+                user_input = cols[j + 1].text_input("", key=f"{i}_{j}")
+                user_answers[(i, j)] = user_input
 
-    submitted = st.form_submit_button("✅ Submit Answers")
+        submitted = st.form_submit_button("✅ Submit Answers")
+
 
 
     if submitted:
