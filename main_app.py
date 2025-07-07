@@ -98,7 +98,10 @@ if st.button("🌀 Generate Matrix"):
 if st.session_state.get("show_matrix", False):
     col_nums = st.session_state.col_nums
     row_nums = st.session_state.row_nums
-    st.write(f"### Fill in the {operation.lower()} results ({level})")
+    symbol = {"Addition": "+", "Subtraction": "-", "Multiplication": "×", "Division": "÷"}[operation]
+    st.markdown(f"### Fill in the answers ({level})")
+    st.markdown(f"➡️ **Each cell = Column {symbol} Row**")
+
 
     user_answers = {}
     correct_count = 0
