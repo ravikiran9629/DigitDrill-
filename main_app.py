@@ -41,7 +41,7 @@ if st.session_state.get("show_matrix", False):
     row_nums = st.session_state.row_nums
 
     # ✅ Live Timer Logic
-    if st.session_state.start_time:
+if st.session_state.start_time:
         elapsed = int(time.time() - st.session_state.start_time)
         timer_placeholder.markdown(
             f"<div style='position: fixed; top: 10px; right: 20px; background-color: #f0f0f0; "
