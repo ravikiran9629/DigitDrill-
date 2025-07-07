@@ -50,7 +50,7 @@ if st.session_state.get("show_matrix", False):
             unsafe_allow_html=True
         )
         time.sleep(1)
-        st.experimental_rerun()
+        st.rerun()
 
     # ✅ Now show the matrix form
     user_answers = {}
