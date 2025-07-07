@@ -42,8 +42,8 @@ digit_options = get_digit_options(operation, level)
 # Matrix Size and Digit Selection
 # -------------------
 n = st.slider("Select Matrix Size (n x n)", 2, 10, 5)
-digits_row = st.selectbox("Digits for Row Numbers", digit_options)
 digits_col = st.selectbox("Digits for Column Numbers", digit_options)
+digits_row = st.selectbox("Digits for Row Numbers", digit_options)
 
 # -------------------
 # Generate Number Range Based on Difficulty
